@@ -45,6 +45,7 @@ class _HomeGpsPageState extends View<HomeGpsPage> with TickerProviderStateMixin 
 
   @override
   void initStateWithContext(BuildContext context) {
+    super.initStateWithContext(context);
     _presenter = HomeGpsPresenter(context, this, widget.locationList, widget.carList);
 
     _buttonAnimController =
