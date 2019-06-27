@@ -388,6 +388,8 @@ class _NHomeState extends AdvState<NHome> with WidgetsBindingObserver {
 
   @override
   Widget advBuild(BuildContext context) {
+    CsHelperDict dict = CsHelperDict.of(context);
+    print("dict => ${dict == null}");
 //    return Column(children: [Text(widget.data ?? "Data Null"), Text(widget.deepLink ?? "Deep Link Null")]);
     return widget.home;
   }

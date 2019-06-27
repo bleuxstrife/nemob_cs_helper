@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nemob_cs_helper/pages/home/home_container_presenter.dart';
 import 'package:nemob_cs_helper/pages/home/home_gps.dart';
 import 'package:nemob_cs_helper/pages/notif/notif.dart';
 import 'package:nemob_cs_helper/utilities/localization.dart';
@@ -16,17 +17,28 @@ class HomeContainerPage extends StatefulWidget {
 
 class _HomeContainerPageState extends View<HomeContainerPage> {
   int _currentIndex = 0;
-
+  HomeContainerPresenter _presenter;
   List<Widget> _children;
+
+  @override
+  void initStateWithContext(BuildContext context) {
+    super.initStateWithContext(context);
+    _presenter = HomeContainerPresenter(context, this);
+  }
 
   @override
   Widget buildView(BuildContext context) {
     // TODO: implement buildView
-    _children = [new HomeGpsPage(), new NotifPage()];
+    _children = [
+      new HomeGpsPage(carList: _presenter.getCarList, locationList: _presenter.getLocationList,),
+      new NotifPage()
+    ];
     return _widgetBuilder(context);
   }
 
   Widget _widgetBuilder(BuildContext context) {
+    print("dict 2 => ${dict == null}");
+
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
