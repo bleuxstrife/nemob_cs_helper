@@ -10,12 +10,15 @@ import 'package:pit_components/components/controllers/adv_chooser_controller.dar
 import 'package:nemob_cs_helper/utilities/view.dart';
 import 'package:nemob_cs_helper/utilities/global.dart' as global;
 
+import '../../application.dart';
+import 'home_container.dart';
 import 'home_container_presenter.dart';
 import 'home_gps_presenter.dart';
 
 class HomeGpsPage extends StatefulWidget {
   final List<String> carList;
   final List<String> locationList;
+
 
 
   HomeGpsPage({this.carList, this.locationList});
@@ -63,144 +66,144 @@ class _HomeGpsPageState extends View<HomeGpsPage> with TickerProviderStateMixin 
   }
 
   _mainSegment() {
-    return Builder(builder: (context) {
-//      currentScaffoldContext = context;
-      return Stack(
-        children: <Widget>[
-          GoogleMap(
+
+    return Stack(
+      children: <Widget>[
+        GoogleMap(
 //          markers: Set<Marker>.of(markers.values),
-              onMapCreated: _onMapCreated,
-              myLocationEnabled: true,
-              tiltGesturesEnabled: false,
-              rotateGesturesEnabled: false,
-              initialCameraPosition: cameraPosition),
-          Container(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: AnimatedBuilder(
-              animation: _buttonAnimController,
-              builder: (context, widget) {
-                return Stack(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(top: AppBar().preferredSize.height),
-                      width: MediaQuery.of(context).size.width,
-                      child: SlideTransition(
-                          position: _containerCarOffset,
-                          child: Container(
-                            color: Colors.white,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: AdvColumn(
-                                divider: ColumnDivider(
-                                  1.0,
-                                  color: Colors.grey,
-                                ),
-                                children: <Widget>[
-                                  AdvMultiSearchGroupCheck(
-                                    widgetCallBack: (car) => _buildItemListCar(car),
-                                    itemCallback: (checkedValueList) {
-                                      _presenter.setCarIdList = checkedValueList;
-                                    },
-                                    itemList: _presenter.getCarGroupItemList,
-                                    checkedValueList: _presenter.getCarIdList,
-                                  )
-                                ],
-                              ),
-                            ),
-                          )),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: AppBar().preferredSize.height),
-                      width: MediaQuery.of(context).size.width,
-                      child: SlideTransition(
-                          position: _containerCityOffset,
-                          child: Container(
-                            color: Colors.white,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: AdvColumn(
-                                  divider: ColumnDivider(
-                                    1.0,
-                                    color: Colors.grey,
-                                  ),
-                                  children: <Widget>[
-                                    AdvMultiSearchGroupCheck(
-                                      widgetCallBack: (location) => _buildItemLocation(location),
-                                      itemCallback: (checkedValueList) {
-                                        _presenter.setLocationIdList = checkedValueList;
-                                      },
-                                      itemList: _presenter.getLocationGroupItemList,
-                                      checkedValueList: _presenter.getLocationIdList,
-                                    )
-                                  ],),
-                            ),
-                          )),
-                    ),
-                    Container(
-                        padding: EdgeInsets.all(16.0),
-                        color: Colors.white,
-                        width: MediaQuery.of(context).size.width,
-                        height: AppBar().preferredSize.height,
-                        child: Container(
-                          child: AdvRow(
-                            divider: RowDivider(8.0),
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              InkWell(
-                                child: Icon(Icons.filter_list),
-                                onTap: () {
-                                  isFilter = true;
-                                  _buttonAnimController.forward();
-                                  if (_slideCarListAnimController.value == 0.0) {
-                                    _slideCarListAnimController.forward();
-                                    isCarExpanded = false;
-                                  }
-
-                                  if (isCityExpanded) {
-                                    _slideCityAnimController.forward();
-                                  } else {
-                                    _slideCityAnimController.reverse();
-                                  }
-                                  isCityExpanded = !isCityExpanded;
-                                },
-                              ),
-                              InkWell(
-                                child: RotationTransition(
-                                    child: Icon(Icons.arrow_upward), turns: _iconOffset),
-                                onTap: () {
-                                  isFilter = false;
-
-                                  if (_slideCityAnimController.value == 0.0) {
-                                    _slideCityAnimController.forward();
-                                    isCityExpanded = false;
-                                  }
-
-                                  if (isCarExpanded) {
-                                    _slideCarListAnimController.forward();
-                                    _buttonAnimController.forward();
-                                  } else {
-                                    _slideCarListAnimController.reverse();
-                                    _buttonAnimController.reverse();
-                                  }
-                                  isCarExpanded = !isCarExpanded;
-                                },
-                              ),
-                            ],
-                          ),
-                        )),
-                  ],
-                );
-              },
-            ),
-          ),
-          Container(
-              color: Colors.white,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).padding.top),
-        ],
-      );
-    });
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            tiltGesturesEnabled: false,
+            rotateGesturesEnabled: false,
+            initialCameraPosition: cameraPosition),
+//        Container(
+//          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+//          child: AnimatedBuilder(
+//            animation: _buttonAnimController,
+//            builder: (context, widget) {
+//              return Stack(
+//                children: <Widget>[
+//                  Container(
+//                    width: MediaQuery.of(context).size.width,
+//                    child: SlideTransition(
+//                        position: _containerCarOffset,
+//                        child: Container(
+//                          color: Colors.white,
+//                          child: SingleChildScrollView(
+//                            scrollDirection: Axis.vertical,
+//                            child: AdvColumn(
+//                              divider: ColumnDivider(
+//                                1.0,
+//                                color: Colors.grey,
+//                              ),
+//                              children: <Widget>[
+//                                AdvMultiSearchGroupCheck(
+//                                  widgetCallBack: (car) => _buildItemListCar(car),
+//                                  itemCallback: (checkedValueList) {
+//                                    _presenter.setCarIdList = checkedValueList;
+//                                  },
+//                                  itemList: _presenter.getCarGroupItemList,
+//                                  checkedValueList: _presenter.getCarIdList,
+//                                )
+//                              ],
+//                            ),
+//                          ),
+//                        )),
+//                  ),
+//                  Container(
+//                    width: MediaQuery.of(context).size.width,
+//                    child: SlideTransition(
+//                        position: _containerCityOffset,
+//                        child: Container(
+//                          color: Colors.white,
+//                          child: SingleChildScrollView(
+//                            scrollDirection: Axis.vertical,
+//                            child: AdvColumn(
+//                              divider: ColumnDivider(
+//                                1.0,
+//                                color: Colors.grey,
+//                              ),
+//                              children: <Widget>[
+//                                AdvMultiSearchGroupCheck(
+//                                  widgetCallBack: (location) => _buildItemLocation(location),
+//                                  itemCallback: (checkedValueList) {
+//                                    _presenter.setLocationIdList = checkedValueList;
+//                                  },
+//                                  itemList: _presenter.getLocationGroupItemList,
+//                                  checkedValueList: _presenter.getLocationIdList,
+//                                )
+//                              ],),
+//                          ),
+//                        )),
+//                  ),
+//
+//                ],
+//              );
+//            },
+//          ),
+//        ),
+//        Container(
+//            color: Colors.white,
+//            width: MediaQuery.of(context).size.width,
+//            height: MediaQuery.of(context).padding.top),
+      ],
+    );
   }
+
+//  Widget _buildAppBar(){
+//    return Container(
+//        padding: EdgeInsets.all(16.0),
+//        color: Colors.white,
+//        width: MediaQuery.of(context).size.width,
+//        height: AppBar().preferredSize.height,
+//        child: Container(
+//          child: AdvRow(
+//            divider: RowDivider(8.0),
+//            mainAxisAlignment: MainAxisAlignment.end,
+//            children: <Widget>[
+//              InkWell(
+//                child: Icon(Icons.filter_list),
+//                onTap: () {
+//                  isFilter = true;
+//                  _buttonAnimController.forward();
+//                  if (_slideCarListAnimController.value == 0.0) {
+//                    _slideCarListAnimController.forward();
+//                    isCarExpanded = false;
+//                  }
+//
+//                  if (isCityExpanded) {
+//                    _slideCityAnimController.forward();
+//                  } else {
+//                    _slideCityAnimController.reverse();
+//                  }
+//                  isCityExpanded = !isCityExpanded;
+//                },
+//              ),
+//              InkWell(
+//                child: RotationTransition(
+//                    child: Icon(Icons.arrow_upward), turns: _iconOffset),
+//                onTap: () {
+//                  isFilter = false;
+//
+//                  if (_slideCityAnimController.value == 0.0) {
+//                    _slideCityAnimController.forward();
+//                    isCityExpanded = false;
+//                  }
+//
+//                  if (isCarExpanded) {
+//                    _slideCarListAnimController.forward();
+//                    _buttonAnimController.forward();
+//                  } else {
+//                    _slideCarListAnimController.reverse();
+//                    _buttonAnimController.reverse();
+//                  }
+//                  isCarExpanded = !isCarExpanded;
+//                },
+//              ),
+//            ],
+//          ),
+//        ));
+//  }
 
   Widget _buildItemListCar(String car) {
     return Container(
@@ -227,6 +230,7 @@ class _HomeGpsPageState extends View<HomeGpsPage> with TickerProviderStateMixin 
     if (mapController != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         mapController.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
       });
     }
     return _mainSegment();

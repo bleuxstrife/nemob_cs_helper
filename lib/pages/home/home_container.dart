@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:nemob_cs_helper/pages/home/home_container_presenter.dart';
 import 'package:nemob_cs_helper/pages/home/home_gps.dart';
 import 'package:nemob_cs_helper/pages/notif/notif.dart';
+import 'package:nemob_cs_helper/providers/models.dart';
 import 'package:nemob_cs_helper/utilities/localization.dart';
 import 'package:nemob_cs_helper/utilities/view.dart';
 import 'package:pit_components/components/adv_button.dart';
 import 'package:pit_components/components/adv_column.dart';
 import 'package:pit_components/components/adv_row.dart';
 import 'package:nemob_cs_helper/utilities/global.dart' as global;
+
+import '../../application.dart';
+
+typedef WidgetAppBarCallback = void Function(Widget widget);
 
 class HomeContainerPage extends StatefulWidget {
   @override
@@ -18,21 +23,28 @@ class HomeContainerPage extends StatefulWidget {
 class _HomeContainerPageState extends View<HomeContainerPage> {
   int _currentIndex = 0;
   HomeContainerPresenter _presenter;
-  List<Widget> _children;
+  List<DrawerItem> _drawerItems;
+  Widget _appBarHomeGps;
 
   @override
   void initStateWithContext(BuildContext context) {
     super.initStateWithContext(context);
     _presenter = HomeContainerPresenter(context, this);
+    _appBarHomeGps = Container();
+    _settingDrawer();
+  }
+
+  _settingDrawer(){
+    _drawerItems = [
+      new DrawerItem(title: dict.getString("gps"), icon: Icons.map),
+      new DrawerItem(title: dict.getString("notification"), icon: Icons.notifications),
+    ];
   }
 
   @override
   Widget buildView(BuildContext context) {
     // TODO: implement buildView
-    _children = [
-      new HomeGpsPage(carList: _presenter.getCarList, locationList: _presenter.getLocationList,),
-      new NotifPage()
-    ];
+
     return _widgetBuilder(context);
   }
 
@@ -44,53 +56,87 @@ class _HomeContainerPageState extends View<HomeContainerPage> {
         child: Scaffold(
           body: Stack(
             children: <Widget>[
-              Container(child: _children[_currentIndex]),
-              Positioned(
-                bottom: 0.0,
-                child: Container(
-                  height: 3.0,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [Colors.transparent, Colors.grey.withOpacity(0.2)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter),
-                  ),
-                ),
-              )
+              Container(child: _getDrawerItemWidget(_currentIndex)),
             ],
           ),
-          bottomNavigationBar:
-              BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  onTap: onTabTapped,
-                  currentIndex: _currentIndex,
-                  items: [
-            new BottomNavigationBarItem(
-                icon: Icon(Icons.map),
-                title: Text(
-                  dict.getString("gps"),
-                  style: TextStyle(color: Colors.black),
-                ),
-                activeIcon: Icon(Icons.map, color: global.systemAccentColor)),
-            new BottomNavigationBarItem(
-                icon: Icon(Icons.notifications),
-                title: Text(
-                  dict.getString('notification'),
-                  style: TextStyle(color: Colors.black),
-                ),
-                activeIcon: Icon(Icons.notifications, color: global.systemAccentColor))
-          ]),
-
+          appBar: _getAppBar(_currentIndex),
+          drawer: Drawer(
+            child: Container(
+              color: Colors.blue,
+              child:AdvColumn(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  UserAccountsDrawerHeader(
+                    currentAccountPicture: new CircleAvatar(),
+                    accountName: Text("Yudisthira Guy"),
+                    accountEmail: Text("yudisguy199@gmail.com"),
+                  ),
+                  AdvColumn(
+                      divider: ColumnDivider(1.0,color: Colors.white),
+                      children: <Widget>[
+                        ListTile(
+                          leading:  Icon(_drawerItems[0].icon),
+                          title:  Text(_drawerItems[0].title),
+                          selected: 0 == _currentIndex,
+                          onTap: () => _onSelectMenu(0),
+                        ),
+                        ListTile(
+                          leading:  Icon(_drawerItems[1].icon),
+                          title:  Text(_drawerItems[1].title),
+                          selected: 1 == _currentIndex,
+                          onTap: () => _onSelectMenu(1),
+                        )
+                      ]
+                  )
+                ],
+              )
+            ),
+          ),
         ));
   }
 
-  void onTabTapped(int index) {
-//    AnalyticsHelper.setCurrentScreen(screenName: _tabNames[_currentIndex]);
-
+  _onSelectMenu(int index) {
     setState(() {
       _currentIndex = index;
     });
+    Navigator.pop(context);
+  }
+
+  Widget _getAppBar(int pos){
+    switch (pos){
+      case 0:
+        return AppBar(title: Text(dict.getString("gps")), actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: (){
+
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: (){
+
+            },
+          )
+        ],);
+      case 1:
+        return AppBar(title: Text(dict.getString("notification")),);
+    }
+  }
+
+  Widget _getDrawerItemWidget(int pos) {
+    switch (pos) {
+      case 0:
+        return new HomeGpsPage(
+          carList: _presenter.getCarList,
+          locationList: _presenter.getLocationList,
+        );
+      case 1:
+        return new  NotifPage();
+
+      default:
+        return new Text("Error");
+    }
   }
 
   Future<bool> _onWillPop() async {
